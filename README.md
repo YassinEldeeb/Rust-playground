@@ -1,3 +1,3 @@
 # My Rust Playground
 
-![Crab](./images/rustacean.svg)
+![Crab](https://github.com/YassinEldeeb/Rust-playground/blob/main/Images/rustacean.svg)
