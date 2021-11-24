@@ -1,9 +1,11 @@
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
+mod intro;
+mod utils;
 
 fn main() {
-    println!("Guess a number between 1 and 10 🤔");
+    intro::print_intro();
     let secret_number = rand::thread_rng().gen_range(1..=10);
     let mut tries = 0;
 
@@ -24,22 +26,13 @@ fn main() {
             }
         };
 
-        fn get_suffix(score: u32) -> String {
-            return match score {
-                1 => "1st".to_string(),
-                2 => "2nd".to_string(),
-                3 => "3rd".to_string(),
-                _ => format!("{}th", score),
-            };
-        }
-
         match guess.cmp(&secret_number) {
             Ordering::Less => {
                 println!("Too small! 🤏");
                 tries += 1;
             }
             Ordering::Equal => {
-                println!("You Win 🎉, from the {} try!", get_suffix(tries));
+                println!("You Win 🎉, from the {} try!", utils::get_suffix(tries));
                 break;
             }
             Ordering::Greater => {
