@@ -1,11 +1,10 @@
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
-mod intro;
 mod utils;
 
 fn main() {
-    intro::print_intro();
+    utils::intro::print_intro();
     let secret_number = rand::thread_rng().gen_range(1..=10);
     let mut tries = 0;
 
@@ -18,6 +17,11 @@ fn main() {
             .read_line(&mut guess)
             .expect("Failed to read your Input!");
 
+        if guess.trim() == "quit" {
+            println!("noob 😒");
+            break;
+        }
+
         let guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
             Err(_) => {
@@ -26,18 +30,20 @@ fn main() {
             }
         };
 
+        tries += 1;
         match guess.cmp(&secret_number) {
             Ordering::Less => {
                 println!("Too small! 🤏");
-                tries += 1;
             }
             Ordering::Equal => {
-                println!("You Win 🎉, from the {} try!", utils::get_suffix(tries));
+                println!(
+                    "You Win 🎉, from the {} try!",
+                    utils::format::get_suffix(tries)
+                );
                 break;
             }
             Ordering::Greater => {
                 println!("Too big! 🚚");
-                tries += 1;
             }
         }
     }
