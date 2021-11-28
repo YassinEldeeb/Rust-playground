@@ -1,5 +1,5 @@
 fn main() {
-    let s = String::from("Hello World");
+    let s = String::from("Hello World How is you?");
 
     let word = first_word(&s);
     let word2 = second_word(&s);
@@ -23,13 +23,11 @@ fn second_word(s: &String) -> &str {
     let bytes = s.as_bytes();
     let mut starting_index = 0;
     let mut ending_index = s.len();
-    let mut starting_index_found = false;
 
     for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' && !starting_index_found {
+        if item == b' ' && starting_index == 0 {
             starting_index = i + 1;
-            starting_index_found = true;
-        } else if item == b' ' && starting_index_found {
+        } else if item == b' ' && starting_index != 0 && ending_index == s.len() {
             ending_index = i;
         }
     }
