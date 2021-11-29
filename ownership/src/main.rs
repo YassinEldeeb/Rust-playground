@@ -1,13 +1,14 @@
 fn main() {
-    let s = String::from("Hello World How is you?");
+    let s = String::from("Hello World, How are you?");
+    let s2 = "Hello";
 
     let word = first_word(&s);
-    let word2 = second_word(&s);
+    let word2 = second_word(s2);
 
     println!("{}--{}", word, word2);
 }
 
-fn first_word(s: &String) -> &str {
+fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
 
     for (i, &item) in bytes.iter().enumerate() {
@@ -19,7 +20,7 @@ fn first_word(s: &String) -> &str {
     &s[..]
 }
 
-fn second_word(s: &String) -> &str {
+fn second_word(s: &str) -> &str {
     let bytes = s.as_bytes();
     let mut starting_index = 0;
     let mut ending_index = s.len();
