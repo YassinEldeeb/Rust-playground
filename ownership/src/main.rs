@@ -1,6 +1,10 @@
 fn main() {
-    let s = String::from("Hello World, How are you?");
+    let mut s = String::from("Hello World, How are you?");
     let s2 = "Hello";
+
+    let s4 = &mut s;
+
+    s4.push_str("Hello");
 
     let word = first_word(&s);
     let word2 = second_word(s2);
