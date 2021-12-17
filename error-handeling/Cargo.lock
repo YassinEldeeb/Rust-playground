@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "rust-addon"
+name = "error-handeling"
 version = "0.1.0"
