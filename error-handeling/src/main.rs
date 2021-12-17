@@ -1,5 +1,5 @@
-use std::fs::File;
-use std::io::ErrorKind;
+use std::fs::{self, File};
+use std::io::{self, ErrorKind, Read};
 
 // fn main() {
 //     a();
@@ -19,9 +19,9 @@ use std::io::ErrorKind;
 
 fn main() {
     // Nested match expressions
-    // let r = File::open("hello.txt");
+    // let file = File::open("hello.txt");
 
-    // let r = match r {
+    // let file = match file {
     //     Ok(file) => file,
     //     Err(error) => match error.kind() {
     //         ErrorKind::NotFound => match File::create("hello.txt") {
@@ -35,15 +35,37 @@ fn main() {
     // };
 
     // Closures
-    let r = File::open("hello.txt").unwrap_or_else(|error| {
-        if error.kind() == ErrorKind::NotFound {
-            File::create("hello.txt").unwrap_or_else(|error| {
-                panic!("Couldn't create 'hello.txt' file: {}", error);
-            })
-        } else {
-            panic!("Problem openning the file: {:?}", error)
-        }
-    });
+    // let file = File::open("hello.txt").unwrap_or_else(|error| {
+    //     if error.kind() == ErrorKind::NotFound {
+    //         File::create("hello.txt").unwrap_or_else(|error| {
+    //             panic!("Couldn't create 'hello.txt' file: {}", error);
+    //         })
+    //     } else {
+    //         panic!("Problem openning the file: {:?}", error)
+    //     }
+    // });
 
-    println!("{:?}", r);
+    // println!("{:?}", file);
+
+    // Shorter syntax from the first example
+    // let file = File::open("hello.txt").expect("Can't find hello.txt");
+    // let file = File::open("hello.txt").unwrap();
+
+    // A Shortcut for Propagating Errors: the ? Operator
+
+    // fn read_username_from_file() -> Result<String, io::Error> {
+    // let mut s = String::new();
+    // File::open("hello.txt")?.read_to_string(&mut s)?;
+
+    // Ok(s)
+
+    // Even shorter??
+    // fs::read_to_string("hello.txt")
+    // }
+
+    // let username = read_username_from_file().expect("Couldn't read your username");
+    // println!("{}", username);
+
+    // Using the ? operator in main fn
+    let file = File::open("hello.txt")?;
 }
