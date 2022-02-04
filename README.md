@@ -219,3 +219,49 @@ This works without any problems. Ownership is moved out, and nothing is dealloca
 Let’s recap what we’ve discussed about references:
 - At any given time, you can have either one mutable reference or any number of immutable references.
 - References must always be valid.
+
+
+## The Slice Type
+*Slices* let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice is a kind of reference, so it does not have ownership.
+
+```rs
+    let s = String::from("hello world");
+
+    let hello = &s[0..5];
+    let world = &s[6..11];
+```
+hello is a reference to a portion of the String, specified in the extra [0..5] bit. We create slices using a range within brackets by specifying [starting_index..ending_index], where starting_index is the first position in the slice and ending_index is one more than the last position in the slice.
+
+![](https://doc.rust-lang.org/book/img/trpl04-06.svg)
+
+With Rust’s .. range syntax, if you want to start at index zero, you can drop the value before the two periods. In other words, these are equal:
+
+
+```rs
+let slice = &s[..2];
+```
+
+By the same token, if your slice includes the last byte of the String, you can drop the trailing number.
+
+```rs
+let slice = &s[3..];
+```
+
+You can also drop both values to take a slice of the entire string. So these are equal:
+
+```rs
+let slice = &s[..];
+```
+
+### Other Slices
+
+Just as we might want to refer to a part of a string, we might want to refer to part of an array. We’d do so like this:
+```rs
+let a = [1, 2, 3, 4, 5];
+
+let slice = &a[1..3];
+
+assert_eq!(slice, &[2, 3]);
+```
+
+This slice has the type `&[i32]`. It works the same way as string slices do, by storing a reference to the first element and a length. You’ll use this kind of slice for all sorts of other collections.
