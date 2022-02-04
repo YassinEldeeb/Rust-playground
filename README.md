@@ -6,6 +6,12 @@
 
 ## Rust's Ownership System
 
+### Benifits
+1. Prevents Data racists.
+2. Prevents Dangling pointers.
+3. Prevents the `double free` error.
+4. Ensures performance when dealing with memory on the heap.
+
 ### Ownership Rules
 
 - Each value in Rust has a variable that’s called its owner.
