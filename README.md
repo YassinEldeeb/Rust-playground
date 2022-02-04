@@ -6,6 +6,12 @@
 
 ## Rust's Ownership System
 
+### Ownership Rules
+
+- Each value in Rust has a variable that’s called its owner.
+- There can only be one owner at a time.
+- When the owner goes out of scope, the value will be dropped.
+
 ### - Data stored on the `Stack`
 ```rs
     let x = 5;
@@ -82,3 +88,134 @@ any group of simple scalar values can implement `Copy` and nothing that requires
 - The character type, `char`.
 - Tuples, if they only contain types that also implement `Copy`. For example, `(i32, i32)` implements `Copy`, but `(i32, String)` does not.
 
+## References `&` (Borrowing)
+A reference is like a pointer in that it’s an address we can follow to access data stored at that address that is owned by some other variable. Unlike a pointer, a reference is guaranteed to point to a valid value of a particular type.
+
+```rs
+fn main() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&s1);
+
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
+```
+![](https://doc.rust-lang.org/book/img/trpl04-05.svg)
+
+## Mutable References `&mut`
+
+```rs
+fn main() {
+    let mut s = String::from("hello");
+
+    change(&mut s);
+}
+
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
+```
+
+Mutable references have one big restriction: you can have only one mutable reference to a particular piece of data at a time. This code that attempts to create two mutable references to `s` will fail:
+
+⚠ Won't compile
+```rs
+    let mut s = String::from("hello");
+
+    let r1 = &mut s;
+    let r2 = &mut s;
+
+    println!("{}, {}", r1, r2);
+```
+
+The restriction preventing multiple mutable references to the same data at the same time allows for mutation but in a very controlled fashion. It’s something that new Rustaceans struggle with, because most languages let you mutate whenever you’d like. The benefit of having this restriction is that Rust can prevent *`data races`* at compile time. A `data race` is similar to a race condition and happens when these three behaviors occur:
+
+- Two or more pointers access the same data at the same time.
+- At least one of the pointers is being used to write to the data.
+- There’s no mechanism being used to synchronize access to the data.
+
+Data races cause undefined behavior and can be difficult to diagnose and fix when you’re trying to track them down at runtime; Rust prevents this problem by refusing to compile code with data races!
+
+As always, we can use curly brackets to create a new scope, allowing for multiple mutable references, just not simultaneous ones:
+
+```rs
+    let mut s = String::from("hello");
+
+    {
+        let r1 = &mut s;
+    } // r1 goes out of scope here, so we can make a new reference with no problems.
+
+    let r2 = &mut s;
+```
+
+Rust enforces a similar rule for combining mutable and immutable references. This code results in an error:
+
+```rs
+    let mut s = String::from("hello");
+
+    let r1 = &s; // no problem
+    let r2 = &s; // no problem
+    let r3 = &mut s; // BIG PROBLEM
+
+    println!("{}, {}, and {}", r1, r2, r3);
+```
+
+Whew! We also cannot have a mutable reference while we have an immutable one to the same value. Users of an immutable reference don’t expect the value to suddenly change out from under them! However, multiple immutable references are allowed because no one who is just reading the data has the ability to affect anyone else’s reading of the data.
+
+### Remember that reference's scope is different than variable scope
+
+Note that a reference’s scope starts from where it is introduced and continues through the last time that reference is used. For instance, this code will compile because the last usage of the immutable references, the `println!`, occurs before the mutable reference is introduced:
+
+```rs
+    let mut s = String::from("hello");
+
+    let r1 = &s; // no problem
+    let r2 = &s; // no problem
+    println!("{} and {}", r1, r2);
+    // variables r1 and r2 will not be used after this point
+
+    let r3 = &mut s; // no problem
+    println!("{}", r3);
+```
+
+> The ability of the compiler to tell that a reference is no longer being used at a point before the end of the scope is called Non-Lexical Lifetimes (NLL for short)
+
+## Dangling References
+In languages with pointers, it’s easy to erroneously create a dangling pointer--a pointer that references a location in memory that may have been given to someone else--by freeing some memory while preserving a pointer to that memory. In Rust, by contrast, the compiler guarantees that references will never be dangling references: if you have a reference to some data, the compiler will ensure that the data will not go out of scope before the reference to the data does.
+
+Let’s try to create a dangling reference to see how Rust prevents them with a compile-time error:
+```rs
+fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -> &String { // dangle returns a reference to a String
+
+    let s = String::from("hello"); // s is a new String
+
+    &s // we return a reference to the String, s
+} // Here, s goes out of scope, and is dropped. Its memory goes away.
+  // Danger!
+```
+Because `s` is created inside `dangle`, when the code of `dangle` is finished, `s` will be deallocated. But we tried to return a reference to it. That means this reference would be pointing to an invalid `String`. That’s no good! Rust won’t let us do this.
+
+The solution here is to return the String directly:
+
+```rs
+fn no_dangle() -> String {
+    let s = String::from("hello");
+
+    s
+}
+```
+This works without any problems. Ownership is moved out, and nothing is deallocated.
+
+
+### The Rules of References
+Let’s recap what we’ve discussed about references:
+- At any given time, you can have either one mutable reference or any number of immutable references.
+- References must always be valid.
