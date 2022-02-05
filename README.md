@@ -271,3 +271,10 @@ assert_eq!(slice, &[2, 3]);
 ```
 
 This slice has the type `&[i32]`. It works the same way as string slices do, by storing a reference to the first element and a length. You’ll use this kind of slice for all sorts of other collections.
+
+## Rust's Module System
+
+- Packages: A Cargo feature that lets you build, test, and share crates
+- Crates: A tree of modules that produces a library or executable
+- Modules and use: Let you control the organization, scope, and privacy of paths
+- Paths: A way of naming an item, such as a struct, function, or module
