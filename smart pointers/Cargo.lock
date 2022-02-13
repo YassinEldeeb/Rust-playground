@@ -5,3 +5,7 @@ version = 3
 [[package]]
 name = "boxes"
 version = "0.1.0"
+
+[[package]]
+name = "deref"
+version = "0.1.0"
