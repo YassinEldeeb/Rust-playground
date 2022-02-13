@@ -3,5 +3,6 @@ members = [
     "boxes",
     "deref",
     "drop",
-    "rc"
+    "rc",
+    "refcell"
 ]
