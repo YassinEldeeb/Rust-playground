@@ -4,5 +4,7 @@ members = [
     "deref",
     "drop",
     "rc",
-    "refcell"
+    "refcell",
+    "ref-cycles",
+    "rc-weak",
 ]

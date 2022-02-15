@@ -19,5 +19,13 @@ name = "rc"
 version = "0.1.0"
 
 [[package]]
+name = "rc-weak"
+version = "0.1.0"
+
+[[package]]
+name = "ref-cycles"
+version = "0.1.0"
+
+[[package]]
 name = "refcell"
 version = "0.1.0"
