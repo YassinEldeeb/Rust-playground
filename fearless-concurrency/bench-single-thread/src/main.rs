@@ -1,6 +1,5 @@
-use std::{fs, time::Instant};
-
-use practice::parse_md;
+use bench_single_thread::parse_md;
+use std::fs;
 
 fn main() {
     let content = fs::read_to_string("test.md").unwrap();

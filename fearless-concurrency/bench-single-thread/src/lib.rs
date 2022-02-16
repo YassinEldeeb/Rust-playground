@@ -36,6 +36,7 @@ fn identify_h(line: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use comrak::{markdown_to_html, ComrakOptions};
     use serde::{Deserialize, Serialize};
     use std::{
         collections::HashMap,
@@ -64,7 +65,7 @@ mod tests {
         let mut results: Vec<Run> = vec![];
         for i in 1..=100 {
             let now = Instant::now();
-            parse_md(String::from(
+            markdown_to_html(
                 "# Hello
 
 ## ## Tricky
@@ -75,7 +76,8 @@ mod tests {
 
 ####### Hello
 ",
-            ));
+                &ComrakOptions::default(),
+            );
             let elapsed = now.elapsed();
 
             results.push(Run {
@@ -96,6 +98,6 @@ mod tests {
 
         let serialized = serde_json::to_string(&bench).unwrap();
 
-        fs::write("bench.json", &serialized).unwrap();
+        fs::write("bench2.json", &serialized).unwrap();
     }
 }

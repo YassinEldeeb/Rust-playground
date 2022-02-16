@@ -3,5 +3,6 @@ members = [
     "threads",
     "message-passing",
     "shared-memory",
-    "bench-single-thread"
+    "bench-single-thread",
+    "practice"
 ]
