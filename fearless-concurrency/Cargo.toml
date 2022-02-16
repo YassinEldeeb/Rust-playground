@@ -1,5 +1,6 @@
 [workspace]
 members = [
     "threads",
-    "message-passing"
+    "message-passing",
+    "shared-memory"
 ]

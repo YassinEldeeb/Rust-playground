@@ -7,5 +7,9 @@ name = "message-passing"
 version = "0.1.0"
 
 [[package]]
+name = "shared-memory"
+version = "0.1.0"
+
+[[package]]
 name = "threads"
 version = "0.1.0"
