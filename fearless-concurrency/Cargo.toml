@@ -2,5 +2,6 @@
 members = [
     "threads",
     "message-passing",
-    "shared-memory"
+    "shared-memory",
+    "bench-single-thread"
 ]
