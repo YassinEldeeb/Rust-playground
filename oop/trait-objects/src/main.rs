@@ -1,4 +1,4 @@
-use oop::{Button, Draw, Screen};
+use trait_objects::{Button, Draw, Screen};
 
 struct SelectBox {
     width: u32,
