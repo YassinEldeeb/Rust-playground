@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "declarative",
+    "procedural",
+    "procedural/procedural_derive",
+    "procedural-usage"
+]
