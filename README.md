@@ -2,7 +2,7 @@
 
 <img src="https://github.com/YassinEldeeb/Rust-playground/blob/main/Images/rustacean.svg" width="400" />
 
-# My Rust's CheatSheat
+# Trying to understand some concepts by teaching 👨‍🏫👇
 
 ## Rust's Ownership System
 
