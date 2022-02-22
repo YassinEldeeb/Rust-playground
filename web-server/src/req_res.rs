@@ -1,13 +1,20 @@
 use std::{collections::HashMap, fs};
 
+/// `Response` is a struct that takes the `buffer` from `TcpStream`
+/// and can call methods on it to respond to the requester through different ways.
 pub struct Response<'a> {
     buffer: &'a [u8; 1024],
 }
 
+/// `Request` is a struct that takes the `buffer` from `TcpStream`
+/// and can call methods on it to parse the request buffer to a `ParsedRequest`
+/// which have all of the useful information you would like to deal with.
 pub struct Request<'a> {
     buffer: &'a [u8; 1024],
 }
 
+/// `ParsedRequest` is a return type of the `parse` method on the `Request` struct
+/// It contains all of the metadata extracted from request data buffer.
 #[derive(Debug)]
 pub struct ParsedRequest {
     method: String,
@@ -18,10 +25,21 @@ pub struct ParsedRequest {
 }
 
 impl<'a> Request<'a> {
+    /// Instantiate a new `Request` struct by providing a request buffer data as the only argument.
     pub fn new(buffer: &'a [u8; 1024]) -> Request<'a> {
         Request { buffer }
     }
 
+    /// Parses the request buffer and returns a `Option<ParsedRequest>`
+    /// In the `Some<ParsedRequest>` case means that it was able to parse the buffer successfully.
+    /// In the `None` case it means that the buffer was malformed and it could't able to parse it.
+    ///
+    /// You can find all kind of useful data from the parsed request buffer like:
+    /// - method
+    /// - uri
+    /// - http version
+    /// - headers
+    /// - body
     pub fn parse(&self) -> Option<ParsedRequest> {
         let req_str = String::from_utf8_lossy(self.buffer);
 
@@ -37,7 +55,11 @@ impl<'a> Request<'a> {
 
         method = parts.next()?.to_string();
         uri = parts.next()?.to_string();
-        http_version = parts.next()?.replace("HTTP/", "").parse().unwrap();
+        http_version = parts
+            .next()?
+            .replace("HTTP/", "")
+            .parse()
+            .expect("Couldn't parse http version!");
 
         lines.remove(0);
 
@@ -63,9 +85,21 @@ impl<'a> Request<'a> {
 }
 
 impl<'a> Response<'a> {
+    /// Instantiate a new `Response` struct by providing a request buffer data as the only argument.
     pub fn new(buffer: &'a [u8; 1024]) -> Response<'a> {
         Response { buffer }
     }
+
+    /// Instantiate a new `Request` struct from the provided request buffer data.
+    /// Uses the `parse` method on the `Request` struct to get metadata about the request
+    /// Decide based on the `uri` field in the `ParsedRequest` struct which page to display.
+    ///
+    ///
+    /// If the parsing process failed, It'll return a response string with a 400 status code to indicate
+    /// that the request was malformed.
+    ///
+    /// Then it reads the corresponding HTML file from the file system and returns back a well-formatted
+    /// response string with the status code and the page contents.
     pub fn get_page(&self) -> String {
         let req = match Request::new(&self.buffer).parse() {
             Some(v) => v,
@@ -98,6 +132,9 @@ impl<'a> Response<'a> {
     }
 }
 
+/// A useful helper function for formatting the response string for easy re-use
+/// It constructs a well-formatted response string using the provided arguments
+/// `status`, `desc`, `headers` and the `body` of the response.
 pub fn response(status: i32, desc: &str, headers: &str, body: &str) -> String {
     format!(
         "HTTP/1.1 {} {}\r\n{}\r\n\r\n{}",
